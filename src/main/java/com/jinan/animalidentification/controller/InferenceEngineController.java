@@ -1,6 +1,7 @@
 package com.jinan.animalidentification.controller;
 
 import com.jinan.animalidentification.entity.Animal;
+import com.jinan.animalidentification.entity.InferenceResponse;
 import com.jinan.animalidentification.entity.Rule;
 import com.jinan.animalidentification.service.InferenceEngineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/inference")
 public class InferenceEngineController {
 
@@ -26,7 +28,7 @@ public class InferenceEngineController {
      * @return 推理结果
      */
     @PostMapping("/forward")
-    public Set<String> forwardInference(@RequestBody Animal animal) {
+    public InferenceResponse forwardInference(@RequestBody Animal animal) {
         return inferenceEngineService.performForwardInference(animal);
     }
 
@@ -36,7 +38,7 @@ public class InferenceEngineController {
      * @return 反向推理得到的条件
      */
     @PostMapping("/backward")
-    public Set<String> backwardInference(@RequestBody List<String> conclusions) {
+    public InferenceResponse backwardInference(@RequestBody List<String> conclusions) {
         return inferenceEngineService.performBackwardInference(conclusions);
     }
 
@@ -44,7 +46,7 @@ public class InferenceEngineController {
      * 清空推理缓存和路径
      * @return 响应消息
      */
-    @DeleteMapping("/clear")
+    @RequestMapping("/clear")
     public String clearCache() {
         inferenceEngineService.clearInferenceCache();
         return "Inference cache cleared.";
@@ -54,7 +56,7 @@ public class InferenceEngineController {
      * 获取所有规则
      * @return 所有规则的列表
      */
-    @GetMapping("/rules")
+    @GetMapping("/rules/all")
     public List<Rule> getAllRules() {
         return inferenceEngineService.getAllRules();
     }
@@ -64,7 +66,7 @@ public class InferenceEngineController {
      * @param rule 新的规则
      * @return 响应消息
      */
-    @PostMapping("/rules")
+    @PostMapping("/rules/add")
     public String addRule(@RequestBody Rule rule) {
         inferenceEngineService.addRule(rule);
         return "Rule added successfully.";
@@ -75,10 +77,16 @@ public class InferenceEngineController {
      * @param rule 需要删除的规则
      * @return 响应消息
      */
-    @DeleteMapping("/rules")
+    @PostMapping("/rules/delete")
     public String deleteRule(@RequestBody Rule rule) {
-        inferenceEngineService.deleteRule(rule);
-        return "Rule deleted successfully.";
+        try {
+            System.out.println("Deleting rule: " + rule); // 添加日志
+            inferenceEngineService.deleteRule(rule);
+            return "Rule deleted successfully.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Rule failed to delete";
+        }
     }
 
     /**
@@ -87,7 +95,7 @@ public class InferenceEngineController {
      * @param newRule 新规则
      * @return 响应消息
      */
-    @PutMapping("/rules")
+    @PostMapping("/rules/update")
     public String updateRule(@RequestBody Rule oldRule, @RequestBody Rule newRule) {
         inferenceEngineService.updateRule(oldRule, newRule);
         return "Rule updated successfully.";

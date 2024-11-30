@@ -3,6 +3,7 @@ package com.jinan.animalidentification.entity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class Rule {
@@ -32,4 +33,18 @@ public class Rule {
     public void setPriority(int priority) {
         this.priority = priority;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rule rule = (Rule) o;
+        return Objects.equals(conditions, rule.conditions) && Objects.equals(conclusion, rule.conclusion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(conditions, conclusion);
+    }
+
 }

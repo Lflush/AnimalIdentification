@@ -17,8 +17,31 @@ public class InferenceEngine {
         this.ruleCache = new HashMap<>();// 初始化缓存
     }
 
+    public void addInitialRules() {
+        // 创建初始规则
+        List<Rule> rules = new ArrayList<>();
+
+        rules.add(new Rule(Arrays.asList("有毛发"), "哺乳动物"));
+        rules.add(new Rule(Arrays.asList("有奶"), "哺乳动物"));
+        rules.add(new Rule(Arrays.asList("有羽毛"), "鸟"));
+        rules.add(new Rule(Arrays.asList("会飞", "会生蛋"), "鸟"));
+        rules.add(new Rule(Arrays.asList("吃肉"), "食肉动物"));
+        rules.add(new Rule(Arrays.asList("有犀利牙齿", "有爪", "眼向前方"), "食肉动物"));
+        rules.add(new Rule(Arrays.asList("哺乳动物", "有蹄"), "有蹄类动物"));
+        rules.add(new Rule(Arrays.asList("哺乳动物", "反刍"), "有蹄类动物"));
+        rules.add(new Rule(Arrays.asList("哺乳动物", "食肉动物", "有黄褐色", "有暗斑点"), "豹"));
+        rules.add(new Rule(Arrays.asList("哺乳动物", "食肉动物", "有黄褐色", "有黑色条纹"), "虎"));
+        rules.add(new Rule(Arrays.asList("有蹄类动物", "有长脖子", "有长腿", "有暗斑点"), "长颈鹿"));
+        rules.add(new Rule(Arrays.asList("有蹄类动物", "有黑色条纹"), "斑马"));
+        rules.add(new Rule(Arrays.asList("鸟", "不会飞", "有长脖子", "有长腿", "黑白二色"), "鸵鸟"));
+        rules.add(new Rule(Arrays.asList("鸟", "不会飞", "会游泳", "黑白二色"), "企鹅"));
+        rules.add(new Rule(Arrays.asList("鸟", "善飞"), "信天翁"));
+
+        this.rules = rules;
+    }
+
     // 正向推理：根据动物的属性推断动物的类型
-    public Set<String> forwardInference(Animal animal) {
+    public InferenceResponse forwardInference(Animal animal) {
         Set<String> conclusions = new HashSet<>(); // 存储推理结果
 
         boolean hasNewConclusions = true;
@@ -57,11 +80,11 @@ public class InferenceEngine {
             }
         }
 
-        return conclusions;
+        return new InferenceResponse(conclusions, inferencePath);
     }
 
     // 反向推理：根据结论找到支持该结论的条件
-    public Set<String> backwardInference(List<String> conclusion) {
+    public InferenceResponse backwardInference(List<String> conclusion) {
         Set<String> conditions = new HashSet<>(conclusion);
 
         boolean hasNewConditions = true;
@@ -88,7 +111,7 @@ public class InferenceEngine {
             conditions.addAll(newConditions);
         }
 
-        return conditions;
+        return new InferenceResponse(conditions, inferencePath);
     }
 
     // 清除已知结论，用于重新推理

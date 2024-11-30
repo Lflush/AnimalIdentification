@@ -2,6 +2,7 @@ package com.jinan.animalidentification.service;
 
 import com.jinan.animalidentification.entity.Animal;
 import com.jinan.animalidentification.entity.InferenceEngine;
+import com.jinan.animalidentification.entity.InferenceResponse;
 import com.jinan.animalidentification.entity.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class InferenceEngineService {
 
     @Autowired
     public InferenceEngineService(InferenceEngine inferenceEngine) {
+        inferenceEngine.addInitialRules();
         this.inferenceEngine = inferenceEngine;
     }
 
@@ -24,7 +26,10 @@ public class InferenceEngineService {
      * @param animal 待推理的动物
      * @return 推理出的结论
      */
-    public Set<String> performForwardInference(Animal animal) {
+    public InferenceResponse performForwardInference(Animal animal) {
+//        System.out.println("Received animal attributes: {}"+ animal.getAttributes());
+        // 清空缓存
+        inferenceEngine.clearCache();
         return inferenceEngine.forwardInference(animal);
     }
 
@@ -33,7 +38,9 @@ public class InferenceEngineService {
      * @param conclusions 需要反向推理的结论
      * @return 反向推理得到的条件
      */
-    public Set<String> performBackwardInference(List<String> conclusions) {
+    public InferenceResponse performBackwardInference(List<String> conclusions) {
+        // 清空缓存
+        inferenceEngine.clearCache();
         return inferenceEngine.backwardInference(conclusions);
     }
 
