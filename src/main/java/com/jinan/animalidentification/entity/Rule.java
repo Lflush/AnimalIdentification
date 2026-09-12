@@ -1,33 +1,44 @@
 package com.jinan.animalidentification.entity;
 
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Objects;
 
-@Component
 public class Rule {
-    private List<String> conditions; // 规则的条件部分
-    private String conclusion; // 规则的结论部分
-    private int priority=1; // 规则的优先级
-    private double confidence=0.5;// 置信度
+    private List<String> conditions;
+    private String conclusion;
+    private int priority = 1;
 
-    public Rule(){};
+    public Rule() {
+    }
+
     public Rule(List<String> conditions, String conclusion) {
+        this(conditions, conclusion, 1);
+    }
+
+    public Rule(List<String> conditions, String conclusion, int priority) {
         this.conditions = conditions;
         this.conclusion = conclusion;
+        this.priority = priority;
     }
 
     public List<String> getConditions() {
         return conditions;
     }
 
+    public void setConditions(List<String> conditions) {
+        this.conditions = conditions;
+    }
+
     public String getConclusion() {
         return conclusion;
     }
 
+    public void setConclusion(String conclusion) {
+        this.conclusion = conclusion;
+    }
+
     public int getPriority() {
-    	return priority;
+        return priority;
     }
 
     public void setPriority(int priority) {
@@ -46,5 +57,4 @@ public class Rule {
     public int hashCode() {
         return Objects.hash(conditions, conclusion);
     }
-
 }

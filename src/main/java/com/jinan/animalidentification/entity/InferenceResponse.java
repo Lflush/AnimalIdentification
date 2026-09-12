@@ -7,6 +7,9 @@ public class InferenceResponse {
     private Set<String> conclusions;
     private List<String> inferencePath;
 
+    public InferenceResponse() {
+    }
+
     public InferenceResponse(Set<String> conclusions, List<String> inferencePath) {
         this.conclusions = conclusions;
         this.inferencePath = inferencePath;
